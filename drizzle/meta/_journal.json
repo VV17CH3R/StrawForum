@@ -1,0 +1,20 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1692769521918,
+      "tag": "0000_free_mikhail_rasputin",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1692769663915,
+      "tag": "0001_ancient_annihilus",
+      "breakpoints": true
+    }
+  ]
+}
