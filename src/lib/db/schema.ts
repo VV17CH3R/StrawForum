@@ -16,8 +16,7 @@ export const profiles = pgTable("profiles", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   username: text("username").notNull(),
-  fullName: text("full_name"),
-  nickname: text("nickname")
+  fullName: text("full_name").notNull()
 });
 
 export type Profile = InferModel<typeof profiles>;

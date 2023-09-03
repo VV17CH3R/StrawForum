@@ -6,9 +6,16 @@ import { createContext, useContext, useEffect, useState } from "react";
 import type { Database } from "@/lib/supabase.types";
 import type { SupabaseClient, User } from "@supabase/auth-helpers-nextjs";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Toaster, toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 type SupabaseContext = {
   supabase: SupabaseClient<Database>;
@@ -26,6 +33,7 @@ export default function SupabaseProvider({
   const [isOpen, setIsOpen] = useState(false);
 
   const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -64,31 +72,62 @@ export default function SupabaseProvider({
               return toast.error("Этот телефон уже используеться.");
             }
 
-            await supabase.auth.signInWithOtp({
+            const {data:sUpData, error:sUpErr} = await supabase.auth.signInWithOtp({
               email: email.trim(),
               options: {
                 data: {
                   username,
+                  full_name: fullName
                 }
               }
             });
+
+            if(sUpErr) {
+              return toast.error(sUpErr.message);
+            }
+
+            toast.success("Проверьте свою почту");
+
             setIsLoading(false);
           }}>
             <Input
               className="mt-6"
+              value={email}
               type="email"
               placeholder="e-mail"
               onChange={e=>setEmail(e.target.value)}
             />
             <Input
               className="mt-3"
+              value={username}
               type="tel"
               placeholder="Моб. телефон"
               onChange={e=>setUsername(e.target.value)}
             />
-            <p className="text-sm my-2 mt-4 cursor-pointer hover:text-blue-400 text-blue-700 underline">
+            <Input
+              className="mt-3"
+              value={fullName}
+              type="text"
+              placeholder="Ваше имя"
+              onChange={e=>setFullName(e.target.value)}
+            />
+            <Dialog>
+              <DialogTrigger asChild>
+              <button 
+                onClick={()=>{}}
+              className="text-sm my-2 mt-4 cursor-pointer mr-14 hover:text-blue-400 text-blue-700 underline">
               {`Что такое "Быстрая регистрация"`}
-            </p>
+            </button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>О быстрой регистрации</DialogTitle>
+                  <DialogDescription>
+                  Вам не имейл придет ссылка, перейдя по которой можно быстро войти в свой профиль на нашем сайте.
+                  </DialogDescription>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
             <Button
               disabled={isLoading}
               className="bg-blue-600/70 transition duration-200 hover:bg-blue-400">

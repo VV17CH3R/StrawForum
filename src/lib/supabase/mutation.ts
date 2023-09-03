@@ -2,6 +2,8 @@
 
 import { randomUUID } from "crypto";
 import { dbServer } from ".";
+import { db } from "../db";
+import { likes } from "../db/schema";
 
 export const likePost = async ({
   postId,
@@ -10,14 +12,13 @@ export const likePost = async ({
   postId: string;
   userId: string;
 }) => {
-  const {data, error} = await dbServer
-    .from("likes")
-    .insert({
-      id: randomUUID(),
-      post_id: postId,
-      user_id: userId
-    });
-  if(error) console.error(error.message)
+  console.log(postId , userId)
+  await db.insert(likes).values({
+    postId: postId,
+    userId: userId
+  }).catch((err)=>{
+    console.error(err);
+  });
 };
 
 export const unlikePost = async ({

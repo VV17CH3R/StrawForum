@@ -35,7 +35,7 @@ const ComposePost = async () => {
         let err = "";
 
         const res =  await db.insert(posts).values({
-            profile_id: userData.user.id,
+            profileId: userData.user.id,
             text: postBody.toString(),
             id: randomUUID()
         }).returning().catch(()=>{

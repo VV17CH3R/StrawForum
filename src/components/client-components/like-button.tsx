@@ -10,7 +10,7 @@ import { toast } from "sonner";
 
 type LikeButtonProps = {
   postId: string;
-  userId: string;
+  userId?: string;
   likesCount: number | null;
   isLiked: boolean;
 };

@@ -18,16 +18,35 @@ const CentralPage = async () => {
             Форум о клубнике
           </h1>
           <ComposePost />
-          {/* <div className="flex flex-col ">
-            {response?.error && (
+          <div className="flex flex-col ">
+            {!response && (
               <div>
                 Нет соединения с сервером, обратитесь в поддержку.
               </div>
             )}
-            {response?.data && response.data.map((post: any) => (
-              <PostEl post={post} key={post.id} />
+
+            {response?.map(({
+              likes,
+              profile,
+              post,
+              hasLiked,
+            }) => (
+              <PostEl 
+                post={{
+                  postDetails: {
+                    ...post
+                  }, 
+                  userProfile:{
+                    ...profile
+                  },
+                }}
+                key={post.id} 
+                currentUserId={userData.user?.id}
+                hasLiked={hasLiked}
+                likesCount={likes.length}
+              />
             ))}
-          </div> */}
+          </div>
         </main>
   )
 }
