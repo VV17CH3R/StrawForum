@@ -14,7 +14,7 @@ const NAVIGATION_ITEMS = [
   {
     title: "Главная",
     icon: GrHome,
-    link: "home",
+    link: "/",
   },
   {
     title: "Новости",
@@ -70,7 +70,7 @@ const LeftSidebar = () => {
                   className="hover:bg-blue-300 hover:scale-105 transform transition duration-300 
                       flex items-center justify-start mx-6 text-lg
                     bg-blue-500/50 px-4 space-x-4 rounded-3xl p-2"
-                  href={`/${el.link}`}
+                  href={el.title === "Магазин" ? `https://klubnichnysalut.ru` :`/${el.link}`}
                   key={el.title}
                 >
                   <div>

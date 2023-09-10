@@ -1,7 +1,7 @@
 "use client";
 
 import { PostgrestError } from "@supabase/supabase-js";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { toast } from "sonner";
 
 type ComposePostFormProps = {
@@ -9,6 +9,8 @@ type ComposePostFormProps = {
 };
 
 const ComposePostForm = ({ serverAction }: ComposePostFormProps) => {
+
+  const [isOnForumOrPersonal, setIsOnForumOrPersonal] = useState(true);
 
   const resetRef = useRef<HTMLButtonElement>(null);
 
@@ -30,10 +32,10 @@ const ComposePostForm = ({ serverAction }: ComposePostFormProps) => {
   return (
     <form action={handleSubmit} className="border-b min-h-[195px] w-full mb-5">
       <div className=" mt-2 flex text-base items-center justify-around border-white">
-        <div className="bg-white/50 cursor-pointer w-52 text-center p-3 rounded-t-md ">
+        <div onClick={() => setIsOnForumOrPersonal(false)} className={`bg-white/${isOnForumOrPersonal ? "20" : "50"} cursor-pointer w-52 text-center p-3 rounded-t-md`}>
           На свою страницу
         </div>
-        <div className="cursor-pointer w-52 text-center p-3 rounded-t-md bg-white/20">
+        <div onClick={() => setIsOnForumOrPersonal(true)} className={`cursor-pointer w-52 text-center p-3 rounded-t-md bg-white/${isOnForumOrPersonal ? "50" : "20"}`}>
           На форум
         </div>
       </div>

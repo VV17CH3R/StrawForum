@@ -1,9 +1,8 @@
 "use server";
 
-import { randomUUID } from "crypto";
 import { dbServer } from ".";
 import { db } from "../db";
-import { likes } from "../db/schema";
+import { likes, replies } from "../db/schema";
 
 export const likePost = async ({
   postId,
@@ -36,3 +35,15 @@ export const unlikePost = async ({
 
   return res;
 };
+
+export const comment = async ({postId, userId, commentText}:{postId: string, userId: string, commentText: string}) => {
+  
+  if(commentText === "") return;
+
+  await db.insert(replies)
+  .values({
+    text: commentText,
+    userId,
+    postId,
+  })
+}

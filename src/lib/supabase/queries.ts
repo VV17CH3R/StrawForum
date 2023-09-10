@@ -4,7 +4,8 @@ import { and, desc, eq, exists } from "drizzle-orm";
 import { db } from "../db";
 import { Like, likes, Posts, posts, Profile, profiles } from "../db/schema";
 import { Database } from "../supabase.types";
-
+import { createServerComponentSupabaseClient } from '@supabase/auth-helpers-nextjs';
+import { cookies, headers } from "next/headers";
 
 export type PostType = Database["public"]["Tables"]["posts"]["Row"] & {
   profiles: Pick<
@@ -13,9 +14,16 @@ export type PostType = Database["public"]["Tables"]["posts"]["Row"] & {
   >;
 }
 
-export const getPosts = async (currentUserID?:string) => {
-    try {
-      const rows = await db
+export const getPosts = async (
+  currentUserID?:string, 
+  getSinglePostId?:string, 
+  orderBy?: boolean, 
+  limit?: number, 
+  getUserPostsById?: string
+  ) => {
+  
+  try {
+      let query = db
       .select({
         posts,
         likes,
@@ -31,17 +39,34 @@ export const getPosts = async (currentUserID?:string) => {
               )
             )
         )} : {}),
-      }).from(posts)
+      })
+      .from(posts)
       .leftJoin(likes, eq(posts.id, likes.postId))
       .innerJoin(profiles, eq(posts.profileId, profiles.id))
-      .orderBy(desc(posts.createdAt))
-      .limit(10)
+
+      if(orderBy){
+        query = query.orderBy(desc(posts.createdAt));
+      }
+      
+      if(limit){
+        query = query.limit(limit);
+      }
+
+      if(getUserPostsById){
+        query = query.where(eq(posts.profileId,  getUserPostsById));
+      }
+
+      if(getSinglePostId) {
+        query = query.where(eq(posts.id, getSinglePostId));
+      }
+
+      const rows = await query;
 
       if (rows) {
         const result = rows.reduce<
           Record<
           string,
-          {post: Posts; likes: Like[]; profile: Profile; hasLiked: boolean | unknown}
+          {post: Posts; likes: Like[]; profile: Profile; hasLiked: boolean}
           >
         >((acc, row)=>{
           const post = row.posts;
@@ -61,11 +86,9 @@ export const getPosts = async (currentUserID?:string) => {
         }, {});
 
         const data = Object.values(result);
-        console.log(data);
         return data;
       }
     } catch (error) {
       console.log(error);
     }
   };
-
